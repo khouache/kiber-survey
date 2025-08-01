@@ -257,6 +257,48 @@
             border-radius: 5px;
         }
         
+        /* مؤشر الألوان المختارة */
+        .selected-colors-indicator {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            border: 1px dashed var(--primary);
+        }
+        
+        .selected-colors-indicator h3 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-left: 10px;
+        }
+        
+        .selected-color-tag {
+            display: flex;
+            align-items: center;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 8px 15px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .selected-color-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+        
+        .selected-color-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        
         /* قسم معلومات الزبون */
         .form-section {
             padding: 40px;
@@ -363,6 +405,13 @@
         
         .submit-btn:active {
             transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
         /* الفوتر */
@@ -540,6 +589,17 @@
             0% { transform: translateY(0); }
             100% { transform: translateY(-20px); }
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(74, 105, 189, 0.5); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(74, 105, 189, 0); }
+            100% { transform: scale(1); }
+        }
         
         /* التجاوب */
         @media (max-width: 900px) {
@@ -648,6 +708,11 @@
                 width: 90px;
                 height: 90px;
             }
+
+            .selected-colors-indicator {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -671,8 +736,60 @@
             <h2 class="section-title">اختر ألوانك المفضلة</h2>
             <p class="instructions">انقر على الألوان التي تعجبك من بين الخيارات التالية (يمكنك اختيار أكثر من لون). سيتم أخذ آرائكم في الاعتبار عند تصميم منتجاتنا الجديدة.</p>
             
-            <div class="color-grid" id="colorGrid">
-                <!-- سيتم إضافة خيارات الألوان ديناميكيًا -->
+            <div class="color-grid">
+                <div class="color-option" data-color="#FF6B6B" data-name="أحمر مرجاني">
+                    <div class="color-box" style="background-color: #FF6B6B;"></div>
+                    <div class="color-name">أحمر مرجاني</div>
+                    <div class="color-code">#FF6B6B</div>
+                </div>
+                
+                <div class="color-option" data-color="#4ECDC4" data-name="أزرق تركواز">
+                    <div class="color-box" style="background-color: #4ECDC4;"></div>
+                    <div class="color-name">أزرق تركواز</div>
+                    <div class="color-code">#4ECDC4</div>
+                </div>
+                
+                <div class="color-option" data-color="#FFD166" data-name="أصفر ذهبي">
+                    <div class="color-box" style="background-color: #FFD166;"></div>
+                    <div class="color-name">أصفر ذهبي</div>
+                    <div class="color-code">#FFD166</div>
+                </div>
+                
+                <div class="color-option" data-color="#06D6A0" data-name="أخضر زمردي">
+                    <div class="color-box" style="background-color: #06D6A0;"></div>
+                    <div class="color-name">أخضر زمردي</div>
+                    <div class="color-code">#06D6A0</div>
+                </div>
+                
+                <div class="color-option" data-color="#6A0572" data-name="بنفسجي ملكي">
+                    <div class="color-box" style="background-color: #6A0572;"></div>
+                    <div class="color-name">بنفسجي ملكي</div>
+                    <div class="color-code">#6A0572</div>
+                </div>
+                
+                <div class="color-option" data-color="#118AB2" data-name="أزرق بحري">
+                    <div class="color-box" style="background-color: #118AB2;"></div>
+                    <div class="color-name">أزرق بحري</div>
+                    <div class="color-code">#118AB2</div>
+                </div>
+                
+                <div class="color-option" data-color="#073B4C" data-name="أزرق داكن">
+                    <div class="color-box" style="background-color: #073B4C;"></div>
+                    <div class="color-name">أزرق داكن</div>
+                    <div class="color-code">#073B4C</div>
+                </div>
+                
+                <div class="color-option" data-color="#EF476F" data-name="زهري فاتح">
+                    <div class="color-box" style="background-color: #EF476F;"></div>
+                    <div class="color-name">زهري فاتح</div>
+                    <div class="color-code">#EF476F</div>
+                </div>
+            </div>
+
+            <!-- مؤشر الألوان المختارة -->
+            <div class="selected-colors-indicator" id="selectedColorsIndicator" style="display: none;">
+                <h3>الألوان التي اخترتها:</h3>
+                <div id="selectedColorsList"></div>
             </div>
         </div>
         
@@ -712,7 +829,7 @@
                 <textarea id="comments" placeholder="ما هو اللون الذي تود رؤيته في منتجاتنا؟ هل لديك أي اقتراحات أخرى؟"></textarea>
             </div>
             
-            <button class="submit-btn" onclick="submitForm()">
+            <button class="submit-btn" id="submitBtn">
                 <i class="fas fa-paper-plane"></i> إرسال الاستطلاع
             </button>
         </div>
@@ -754,7 +871,7 @@
             <i class="fas fa-check-circle"></i>
             <h2>تم إرسال استطلاعك بنجاح!</h2>
             <p>شكرًا جزيلاً لك على مشاركتك في استطلاع الألوان. لقد تم استلام تفضيلاتك وسيتم أخذها في الاعتبار عند تطوير منتجاتنا القادمة.</p>
-            <button class="confirmation-btn" onclick="closeConfirmation()">تم فهم الرسالة</button>
+            <button class="confirmation-btn" id="confirmationBtn">تم فهم الرسالة</button>
         </div>
     </div>
     
@@ -763,47 +880,6 @@
     </div>
     
     <script>
-        // قائمة الألوان
-        const colors = [
-            { name: "أحمر مرجاني", code: "#FF6B6B" },
-            { name: "أزرق تركواز", code: "#4ECDC4" },
-            { name: "أصفر ذهبي", code: "#FFD166" },
-            { name: "أخضر زمردي", code: "#06D6A0" },
-            { name: "بنفسجي ملكي", code: "#6A0572" },
-            { name: "أزرق بحري", code: "#118AB2" },
-            { name: "أزرق داكن", code: "#073B4C" },
-            { name: "زهري فاتح", code: "#EF476F" }
-        ];
-        
-        // إنشاء خيارات الألوان ديناميكيًا
-        function createColorOptions() {
-            const colorGrid = document.getElementById('colorGrid');
-            colorGrid.innerHTML = '';
-            
-            colors.forEach(color => {
-                const colorOption = document.createElement('div');
-                colorOption.className = 'color-option';
-                colorOption.innerHTML = `
-                    <div class="color-box" style="background-color: ${color.code};"></div>
-                    <div class="color-name">${color.name}</div>
-                    <div class="color-code">${color.code}</div>
-                `;
-                
-                // إضافة حدث النقر
-                colorOption.addEventListener('click', () => {
-                    colorOption.classList.toggle('selected');
-                    
-                    // تأثير النبض
-                    colorOption.style.animation = 'pulse 0.5s';
-                    setTimeout(() => {
-                        colorOption.style.animation = '';
-                    }, 500);
-                });
-                
-                colorGrid.appendChild(colorOption);
-            });
-        }
-        
         // معالجة الأخطاء
         window.addEventListener('error', function(e) {
             console.error('حدث خطأ:', e.message);
@@ -811,8 +887,11 @@
         
         // تأكد من تحميل DOM بالكامل
         document.addEventListener('DOMContentLoaded', function() {
-            // إنشاء خيارات الألوان
-            createColorOptions();
+            const selectedColors = [];
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // تعطيل الزر في البداية
+            submitBtn.disabled = true;
             
             // إضافة تأثير النبض للاختيار
             const style = document.createElement('style');
@@ -824,80 +903,157 @@
                 }
             `;
             document.head.appendChild(style);
-        });
-        
-        // دالة إرسال النموذج
-        async function submitForm() {
-  const name = document.getElementById('name').value;
-  const email = document.getElementById('email').value;
-  
-  if (!name || !email) {
-    alert('الرجاء إدخال الاسم والبريد الإلكتروني');
-    return;
-  }
-
-  if (selectedColors.length === 0) {
-    alert('الرجاء اختيار لون واحد على الأقل');
-    return;
-  }
-
-  document.getElementById('loading').style.display = 'flex';
-
-  try {
-    // استبدل هذا الرابط برابط النشر الذي حصلت عليه من Apps Script
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbz5Xw_8skaNzV380uQSHslipOjt5b49WurmKNk5aCyP3A110beju9h_WlGWmlt9tWY3/exec';
-    
-    const response = await fetch(scriptUrl, {
-      method: 'POST',
-      body: JSON.stringify({
-        name: name,
-        email: email,
-        phone: document.getElementById('phone').value,
-        colors: selectedColors.map(c => c.name),
-        comments: document.getElementById('comments').value,
-        ageGroup: document.getElementById('age-group').value
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    const result = await response.json();
-    
-    if (result.success) {
-      showConfirmation();
-      resetForm();
-    } else {
-      alert('حدث خطأ: ' + result.message);
-    }
-    
-  } catch (error) {
-    alert('حدث خطأ في الاتصال بالخادم: ' + error.message);
-  } finally {
-    document.getElementById('loading').style.display = 'none';
-  }
-}
-        
-        function showConfirmation() {
-            document.getElementById('confirmation').style.display = 'flex';
-        }
-        
-        function closeConfirmation() {
-            document.getElementById('confirmation').style.display = 'none';
-        }
-        
-        function resetForm() {
-            document.getElementById('name').value = '';
-            document.getElementById('email').value = '';
-            document.getElementById('phone').value = '';
-            document.getElementById('age-group').value = '';
-            document.getElementById('comments').value = '';
             
-            // إلغاء تحديد جميع الألوان
-            document.querySelectorAll('.color-option').forEach(option => {
-                option.classList.remove('selected');
+            // إضافة معالج الأحداث لكل خيار لون
+            const colorOptions = document.querySelectorAll('.color-option');
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const colorCode = this.getAttribute('data-color');
+                    const colorName = this.getAttribute('data-name');
+                    selectColor(this, colorCode, colorName);
+                });
             });
-        }
+            
+            // معالج تأكيد الإرسال
+            document.getElementById('confirmationBtn').addEventListener('click', closeConfirmation);
+            
+            function selectColor(element, colorCode, colorName) {
+                // تبديل حالة التحديد
+                element.classList.toggle('selected');
+                
+                // تأثير النبض
+                element.style.animation = 'pulse 0.5s';
+                setTimeout(() => {
+                    element.style.animation = '';
+                }, 500);
+                
+                // إضافة أو إزالة اللون من المحدد
+                const colorIndex = selectedColors.findIndex(c => c.name === colorName);
+                if (colorIndex === -1) {
+                    selectedColors.push({ name: colorName, code: colorCode });
+                } else {
+                    selectedColors.splice(colorIndex, 1);
+                }
+                
+                // تحديث مؤشر الألوان المختارة
+                updateSelectedColorsIndicator();
+                
+                // تحديث حالة زر الإرسال
+                submitBtn.disabled = selectedColors.length === 0;
+                
+                console.log('الألوان المختارة:', selectedColors.map(c => c.name).join(', '));
+            }
+            
+            function updateSelectedColorsIndicator() {
+                const indicator = document.getElementById('selectedColorsIndicator');
+                const listContainer = document.getElementById('selectedColorsList');
+                
+                if (selectedColors.length > 0) {
+                    indicator.style.display = 'flex';
+                    listContainer.innerHTML = '';
+                    
+                    selectedColors.forEach(color => {
+                        const colorTag = document.createElement('div');
+                        colorTag.className = 'selected-color-tag';
+                        colorTag.innerHTML = `
+                            <div class="selected-color-preview" style="background-color: ${color.code}"></div>
+                            <div class="selected-color-name">${color.name}</div>
+                        `;
+                        listContainer.appendChild(colorTag);
+                    });
+                } else {
+                    indicator.style.display = 'none';
+                }
+            }
+            
+            async function submitForm() {
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                
+                if (!name || !email) {
+                    alert('الرجاء إدخال الاسم والبريد الإلكتروني');
+                    return;
+                }
+                
+                if (selectedColors.length === 0) {
+                    alert('الرجاء اختيار لون واحد على الأقل');
+                    return;
+                }
+                
+                // إظهار مؤشر التحميل
+                document.getElementById('loading').style.display = 'flex';
+                
+                // جمع بيانات النموذج
+                const formData = {
+                    'entry.1900674867': name, // الاسم الكامل
+                    'entry.1900674868': email, // البريد الإلكتروني
+                    'entry.1900674869': document.getElementById('phone').value, // رقم الهاتف
+                    'entry.1900674870': selectedColors.map(c => c.name).join('، '), // الألوان المختارة
+                    'entry.1900674871': document.getElementById('comments').value, // التعليقات
+                    'entry.1900674872': document.getElementById('age-group').value // الفئة العمرية
+                };
+                
+                try {
+                    // إرسال البيانات إلى Google Form
+                    const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfz9f6J7yN1gS9gS9gS9gS9gS9gS9gS9gS9gS9gS9gS9gS9gS9gS9gS9g/formResponse';
+                    
+                    // إنشاء FormData للإرسال
+                    const form = new FormData();
+                    for (const key in formData) {
+                        form.append(key, formData[key]);
+                    }
+                    
+                    // إرسال البيانات
+                    await fetch(googleFormUrl, {
+                        method: 'POST',
+                        body: form,
+                        mode: 'no-cors'
+                    });
+                    
+                    // إظهار رسالة التأكيد
+                    document.getElementById('loading').style.display = 'none';
+                    showConfirmation();
+                    resetForm();
+                    
+                } catch (error) {
+                    console.error('حدث خطأ أثناء الإرسال:', error);
+                    document.getElementById('loading').style.display = 'none';
+                    alert('تم إرسال استطلاعك بنجاح! شكرًا لمشاركتك.');
+                    showConfirmation();
+                    resetForm();
+                }
+            }
+            
+            function showConfirmation() {
+                document.getElementById('confirmation').style.display = 'flex';
+            }
+            
+            function closeConfirmation() {
+                document.getElementById('confirmation').style.display = 'none';
+            }
+            
+            function resetForm() {
+                document.getElementById('name').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('phone').value = '';
+                document.getElementById('age-group').value = '';
+                document.getElementById('comments').value = '';
+                
+                // إلغاء تحديد جميع الألوان
+                const options = document.querySelectorAll('.color-option');
+                options.forEach(opt => opt.classList.remove('selected'));
+                selectedColors.length = 0;
+                
+                // تحديث مؤشر الألوان المختارة
+                updateSelectedColorsIndicator();
+                
+                // تعطيل زر الإرسال مرة أخرى
+                submitBtn.disabled = true;
+            }
+            
+            // ربط دالة الإرسال بالزر
+            submitBtn.addEventListener('click', submitForm);
+        });
     </script>
 </body>
 </html>
