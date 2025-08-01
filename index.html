@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>استطلاع الألوان المفضلة | Kiber</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- روابط آمنة تدعم CORS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
@@ -776,15 +779,15 @@
                 <div class="contact-info">
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>بومرداس، الجزائر</span>
+                        <span> الجزائر</span>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-phone"></i>
-                        <span>089461710002353</span>
+                        <span>0555797789</span>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
-                        <span>kiber.t@gmail.com</span>
+                        <span>kiber.kacem@gmail.com</span>
                     </div>
                 </div>
                 
@@ -809,84 +812,90 @@
     </div>
     
     <script>
-        let selectedColor = null;
-        let selectedColorCode = null;
-        let selectedColorName = null;
+        // معالجة الأخطاء
+        window.addEventListener('error', function(e) {
+            console.error('حدث خطأ:', e.message);
+        });
         
-        function selectColor(element, colorCode, colorName) {
-            const options = document.querySelectorAll('.color-option');
-            options.forEach(opt => opt.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedColor = element.querySelector('.color-name').textContent;
-            selectedColorCode = colorCode;
-            selectedColorName = colorName;
+        // تأكد من تحميل DOM بالكامل
+        document.addEventListener('DOMContentLoaded', function() {
+            let selectedColor = null;
+            let selectedColorCode = null;
+            let selectedColorName = null;
             
-            // إضافة تأثير إضافي عند الاختيار
-            element.style.animation = 'pulse 0.5s';
-            setTimeout(() => {
-                element.style.animation = '';
-            }, 500);
-        }
-        
-        function submitForm() {
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            
-            if (!name || !email) {
-                alert('الرجاء إدخال الاسم والبريد الإلكتروني');
-                return;
-            }
-            
-            if (!selectedColor) {
-                alert('الرجاء اختيار لونك المفضل');
-                return;
-            }
-            
-            // إظهار مؤشر التحميل
-            document.getElementById('loading').style.display = 'flex';
-            
-            // محاكاة إرسال البيانات (في الواقع سيتم الإرسال إلى السيرفر)
-            setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
-                showConfirmation();
+            function selectColor(element, colorCode, colorName) {
+                const options = document.querySelectorAll('.color-option');
+                options.forEach(opt => opt.classList.remove('selected'));
+                element.classList.add('selected');
+                selectedColor = element.querySelector('.color-name').textContent;
+                selectedColorCode = colorCode;
+                selectedColorName = colorName;
                 
-                // إعادة تعيين النموذج
-                resetForm();
-            }, 2000);
-        }
-        
-        function showConfirmation() {
-            document.getElementById('confirmation').style.display = 'flex';
-        }
-        
-        function closeConfirmation() {
-            document.getElementById('confirmation').style.display = 'none';
-        }
-        
-        function resetForm() {
-            document.getElementById('name').value = '';
-            document.getElementById('email').value = '';
-            document.getElementById('phone').value = '';
-            document.getElementById('age-group').value = '';
-            document.getElementById('comments').value = '';
-            
-            const options = document.querySelectorAll('.color-option');
-            options.forEach(opt => opt.classList.remove('selected'));
-            selectedColor = null;
-            selectedColorCode = null;
-            selectedColorName = null;
-        }
-        
-        // إضافة تأثير النبض للاختيار
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @keyframes pulse {
-                0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(74, 105, 189, 0.5); }
-                70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(74, 105, 189, 0); }
-                100% { transform: scale(1); }
+                // تأثير النبض
+                element.style.animation = 'pulse 0.5s';
+                setTimeout(() => {
+                    element.style.animation = '';
+                }, 500);
             }
-        `;
-        document.head.appendChild(style);
+            
+            function submitForm() {
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                
+                if (!name || !email) {
+                    alert('الرجاء إدخال الاسم والبريد الإلكتروني');
+                    return;
+                }
+                
+                if (!selectedColor) {
+                    alert('الرجاء اختيار لونك المفضل');
+                    return;
+                }
+                
+                // إظهار مؤشر التحميل
+                document.getElementById('loading').style.display = 'flex';
+                
+                // محاكاة الإرسال
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    showConfirmation();
+                    resetForm();
+                }, 1500);
+            }
+            
+            function showConfirmation() {
+                document.getElementById('confirmation').style.display = 'flex';
+            }
+            
+            function closeConfirmation() {
+                document.getElementById('confirmation').style.display = 'none';
+            }
+            
+            function resetForm() {
+                document.getElementById('name').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('phone').value = '';
+                document.getElementById('age-group').value = '';
+                document.getElementById('comments').value = '';
+                
+                const options = document.querySelectorAll('.color-option');
+                options.forEach(opt => opt.classList.remove('selected'));
+                selectedColor = null;
+                selectedColorCode = null;
+                selectedColorName = null;
+            }
+            
+            // إضافة تأثير النبض للاختيار
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes pulse {
+                    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(74, 105, 189, 0.5); }
+                    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(74, 105, 189, 0); }
+                    100% { transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
     </script>
 </body>
 </html>
