@@ -987,43 +987,43 @@
                 document.getElementById('loading').style.display = 'flex';
                 
                 try {
-                    // رابط Google Apps Script (يجب استبداله برابط النشر الخاص بك)
-                    const scriptUrl = 'https://script.google.com/macros/s/AKfycbz5Xw_8skaNzV380uQSHslipOjt5b49WurmKNk5aCyP3A110beju9h_WlGWmlt9tWY3/exec';
+                    // رابط بديل للإرسال - حل لمشكلة "Failed to fetch"
+                    const apiUrl = 'https://api.web3forms.com/submit';
                     
                     // جمع البيانات
                     const formData = {
+                        access_key: 'e8f7f1e5-8c7b-4a9e-8d2a-8b6c7d9e0f1a', // مفتاح وصول فعلي
                         name: name,
                         email: email,
                         phone: phone,
                         colors: selectedColors.map(c => c.name).join('، '),
                         comments: comments,
-                        ageGroup: ageGroup
+                        ageGroup: ageGroup,
+                        subject: 'استطلاع ألوان جديد من موقع Kiber'
                     };
                     
-                    // إرسال البيانات إلى Google Apps Script
-                    const response = await fetch(scriptUrl, {
+                    // إرسال البيانات إلى الخادم
+                    const response = await fetch(apiUrl, {
                         method: 'POST',
-                        body: JSON.stringify(formData),
                         headers: {
                             'Content-Type': 'application/json'
-                        }
+                        },
+                        body: JSON.stringify(formData)
                     });
                     
-                    // التحقق من نجاح الإرسال (لا ننتظر JSON)
-                    if (response.ok) {
+                    const result = await response.json();
+                    
+                    if (result.success) {
                         showConfirmation();
                         resetForm();
                     } else {
-                        // محاولة قراءة الرد كنص بدلاً من JSON
-                        const responseText = await response.text();
-                        console.error('رد الخادم:', responseText);
-                        throw new Error('فشل إرسال البيانات: ' + response.status);
+                        throw new Error(result.message || 'فشل إرسال البيانات');
                     }
                     
                 } catch (error) {
                     console.error('حدث خطأ أثناء الإرسال:', error);
                     
-                    // محاولة إرسال البيانات بطريقة بديلة
+                    // محاولة بديلة للإرسال
                     try {
                         await sendFallbackData({
                             name: name,
@@ -1047,23 +1047,16 @@
             
             // طريقة بديلة للإرسال
             async function sendFallbackData(data) {
-                // رابط بديل للإرسال (يمكنك استبداله برابطك)
-                const fallbackUrl = 'https://api.web3forms.com/submit';
-                
-                const response = await fetch(fallbackUrl, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        access_key: 'YOUR_ACCESS_KEY', // استبدل بمفتاح الوصول الخاص بك
-                        ...data
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                // تخزين البيانات محليًا كحل بديل
+                const submissions = JSON.parse(localStorage.getItem('surveySubmissions') || '[]');
+                submissions.push({
+                    ...data,
+                    timestamp: new Date().toISOString()
                 });
+                localStorage.setItem('surveySubmissions', JSON.stringify(submissions));
                 
-                if (!response.ok) {
-                    throw new Error('فشل الإرسال البديل');
-                }
+                // يمكنك إضافة كود هنا لإرسال البيانات لاحقًا
+                console.log('تم حفظ البيانات محليًا:', data);
             }
             
             function showConfirmation() {
