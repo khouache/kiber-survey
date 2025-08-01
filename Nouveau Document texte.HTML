@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج جمع البيانات</title>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3dc;
+            --light: #f5f8fa;
+            --dark: #333;
+            --success: #4CAF50;
+            --error: #f44336;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e5799 0%,#207cca 51%,#2989d8 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .form-container {
+            padding: 30px;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -15px;
+        }
+        
+        .form-group {
+            flex: 1 0 300px;
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 195, 220, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-item input {
+            margin-left: 8px;
+        }
+        
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-submit:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+        
+        .btn-submit:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .response-message {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .success {
+            background: rgba(76, 175, 80, 0.15);
+            color: var(--success);
+            border: 1px solid var(--success);
+            display: block;
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.15);
+            color: var(--error);
+            border: 1px solid var(--error);
+            display: block;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--light);
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .form-group {
+                flex: 1 0 100%;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>نموذج جمع البيانات</h1>
+            <p>يرجى تعبئة النموذج التالي وسيتم حفظ بياناتك في جدول بيانات Google</p>
+        </header>
+        
+        <div class="form-container">
+            <form id="dataForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">الاسم الكامل:</label>
+                        <input type="text" id="name" class="form-control" required placeholder="أدخل اسمك الثلاثي">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">البريد الإلكتروني:</label>
+                        <input type="email" id="email" class="form-control" required placeholder="example@domain.com">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">رقم الهاتف:</label>
+                        <input type="tel" id="phone" class="form-control" required placeholder="05XXXXXXXX">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ageGroup">الفئة العمرية:</label>
+                        <select id="ageGroup" class="form-control" required>
+                            <option value="">اختر فئتك العمرية</option>
+                            <option value="أقل من 18">أقل من 18 سنة</option>
+                            <option value="18-25">18-25 سنة</option>
+                            <option value="26-35">26-35 سنة</option>
+                            <option value="36-50">36-50 سنة</option>
+                            <option value="أكثر من 50">أكثر من 50 سنة</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>الألوان المفضلة:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="red" name="colors" value="أحمر">
+                            <label for="red">أحمر</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="blue" name="colors" value="أزرق">
+                            <label for="blue">أزرق</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="green" name="colors" value="أخضر">
+                            <label for="green">أخضر</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="yellow" name="colors" value="أصفر">
+                            <label for="yellow">أصفر</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="purple" name="colors" value="بنفسجي">
+                            <label for="purple">بنفسجي</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="orange" name="colors" value="برتقالي">
+                            <label for="orange">برتقالي</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="comments">تعليقات إضافية:</label>
+                    <textarea id="comments" class="form-control" placeholder="أي تعليقات أو ملاحظات إضافية..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn-submit" id="submitBtn">إرسال البيانات</button>
+                
+                <div id="responseMessage" class="response-message"></div>
+            </form>
+        </div>
+        
+        <footer>
+            <p>جميع البيانات المرسلة سيتم حفظها في جدول بيانات Google وسيتم استخدامها لأغراض التوثيق فقط</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('dataForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const responseMessage = document.getElementById('responseMessage');
+            
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // جمع البيانات من النموذج
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const ageGroup = document.getElementById('ageGroup').value;
+                
+                // جمع الألوان المختارة
+                const colorCheckboxes = document.querySelectorAll('input[name="colors"]:checked');
+                const colors = Array.from(colorCheckboxes).map(cb => cb.value).join(', ');
+                
+                const comments = document.getElementById('comments').value;
+                
+                // تعطيل زر الإرسال أثناء المعالجة
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'جاري الإرسال...';
+                
+                try {
+                    // استبدل هذا الرابط برابط نشر Google Apps Script الخاص بك
+                    const scriptURL = 'https://script.google.com/macros/s/AKfycby.../exec';
+                    
+                    const response = await fetch(scriptURL, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            name: name,
+                            email: email,
+                            phone: phone,
+                            colors: colors,
+                            comments: comments,
+                            ageGroup: ageGroup
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.result === 'success') {
+                        showMessage('تم إرسال البيانات بنجاح! سيتم حفظها في جدول البيانات.', 'success');
+                        form.reset();
+                    } else {
+                        showMessage(`حدث خطأ: ${result.message || 'يرجى المحاولة مرة أخرى'}`, 'error');
+                    }
+                } catch (error) {
+                    showMessage(`حدث خطأ في الإرسال: ${error.message}`, 'error');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'إرسال البيانات';
+                }
+            });
+            
+            function showMessage(text, type) {
+                responseMessage.textContent = text;
+                responseMessage.className = 'response-message ' + type;
+                responseMessage.style.display = 'block';
+                
+                // إخفاء الرسالة بعد 5 ثواني
+                setTimeout(() => {
+                    responseMessage.style.display = 'none';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
