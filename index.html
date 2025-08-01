@@ -987,136 +987,45 @@
                 document.getElementById('loading').style.display = 'flex';
                 
                 try {
-                    // رابط بديل للإرسال - حل لمشكلة "Failed to fetch"
-                    const apiUrl = 'https://api.web3forms.com/submit';
+                    // رابط Google Apps Script الخاص بك
+                    const scriptUrl = 'https://script.google.com/macros/s/AKfycbwH8AL7JykxE5eKXaPv8oEkwitKM1TbPnRuHWgVi4jRrNHp0KlIO3_XLFBoJfg2JMfF3Q/exec';
                     
                     // جمع البيانات
                     const formData = {
-                        access_key: '2217478d-1834-444c-a1e6-bd093086856b', // مفتاح وصول فعلي
                         name: name,
                         email: email,
                         phone: phone,
                         colors: selectedColors.map(c => c.name).join('، '),
                         comments: comments,
-                        ageGroup: ageGroup,
-                        subject: 'استطلاع ألوان جديد من موقع Kiber'
+                        ageGroup: ageGroup
                     };
                     
-                    // إرسال البيانات إلى الخادم
-                    const response = await fetch(apiUrl, {
+                    // إرسال البيانات إلى Google Apps Script
+                    const response = await fetch(scriptUrl, {
                         method: 'POST',
+                        body: JSON.stringify(formData),
                         headers: {
                             'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
+                        }
                     });
                     
-                    const result = await response.json();
-                    
-                    if (result.success) {
+                    // التحقق من نجاح الإرسال
+                    if (response.ok) {
                         showConfirmation();
                         resetForm();
                     } else {
-                        throw new Error(result.message || 'فشل إرسال البيانات');
+                        // محاولة قراءة الرد كنص بدلاً من JSON
+                        const responseText = await response.text();
+                        console.error('رد الخادم:', responseText);
+                        throw new Error('فشل إرسال البيانات: ' + response.status);
                     }
                     
                 } catch (error) {
                     console.error('حدث خطأ أثناء الإرسال:', error);
-                    
-                    // محاولة بديلة للإرسال
-                    try {
-                        await sendFallbackData({
-                            name: name,
-                            email: email,
-                            phone: phone,
-                            colors: selectedColors.map(c => c.name).join('، '),
-                            comments: comments,
-                            ageGroup: ageGroup
-                        });
-                        
-                        showConfirmation();
-                        resetForm();
-                    } catch (fallbackError) {
-                        console.error('فشل الإرسال البديل:', fallbackError);
-                        alert('حدث خطأ في الاتصال بالخادم: ' + error.message);
-                    }
+                    alert('حدث خطأ في الاتصال بالخادم: ' + error.message);
                 } finally {
                     document.getElementById('loading').style.display = 'none';
                 }
-            }
-            async function submitForm() {
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    const comments = document.getElementById('comments').value;
-    const ageGroup = document.getElementById('age-group').value;
-    
-    if (!name || !email) {
-        alert('الرجاء إدخال الاسم والبريد الإلكتروني');
-        return;
-    }
-    
-    if (selectedColors.length === 0) {
-        alert('الرجاء اختيار لون واحد على الأقل');
-        return;
-    }
-    
-    // إظهار مؤشر التحميل
-    document.getElementById('loading').style.display = 'flex';
-    
-    try {
-        // رابط Google Apps Script الخاص بك
-        const scriptUrl = 'https://script.google.com/macros/library/d/1eDwh9oq-YmZ3vDGU42HIBl6wS7pMaMmmqB5uN_lbllh7opibQqKLrAWf/1';
-        
-        // جمع البيانات
-        const formData = {
-            name: name,
-            email: email,
-            phone: phone,
-            colors: selectedColors.map(c => c.name).join('، '),
-            comments: comments,
-            ageGroup: ageGroup
-        };
-        
-        // إرسال البيانات إلى Google Apps Script
-        const response = await fetch(scriptUrl, {
-            method: 'POST',
-            body: JSON.stringify(formData),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        // التحقق من نجاح الإرسال
-        if (response.ok) {
-            showConfirmation();
-            resetForm();
-        } else {
-            // محاولة قراءة الرد كنص بدلاً من JSON
-            const responseText = await response.text();
-            console.error('رد الخادم:', responseText);
-            throw new Error('فشل إرسال البيانات: ' + response.status);
-        }
-        
-    } catch (error) {
-        console.error('حدث خطأ أثناء الإرسال:', error);
-        alert('حدث خطأ في الاتصال بالخادم: ' + error.message);
-    } finally {
-        document.getElementById('loading').style.display = 'none';
-    }
-}
-            // طريقة بديلة للإرسال
-            async function sendFallbackData(data) {
-                // تخزين البيانات محليًا كحل بديل
-                const submissions = JSON.parse(localStorage.getItem('surveySubmissions') || '[]');
-                submissions.push({
-                    ...data,
-                    timestamp: new Date().toISOString()
-                });
-                localStorage.setItem('surveySubmissions', JSON.stringify(submissions));
-                
-                // يمكنك إضافة كود هنا لإرسال البيانات لاحقًا
-                console.log('تم حفظ البيانات محليًا:', data);
             }
             
             function showConfirmation() {
