@@ -969,6 +969,9 @@
             async function submitForm() {
                 const name = document.getElementById('name').value;
                 const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const comments = document.getElementById('comments').value;
+                const ageGroup = document.getElementById('age-group').value;
                 
                 if (!name || !email) {
                     alert('الرجاء إدخال الاسم والبريد الإلكتروني');
@@ -983,44 +986,43 @@
                 // إظهار مؤشر التحميل
                 document.getElementById('loading').style.display = 'flex';
                 
-                // جمع بيانات النموذج
-                const formData = {
-                    'entry.1900674867': name, // الاسم الكامل
-                    'entry.1900674868': email, // البريد الإلكتروني
-                    'entry.1900674869': document.getElementById('phone').value, // رقم الهاتف
-                    'entry.1900674870': selectedColors.map(c => c.name).join('، '), // الألوان المختارة
-                    'entry.1900674871': document.getElementById('comments').value, // التعليقات
-                    'entry.1900674872': document.getElementById('age-group').value // الفئة العمرية
-                };
-                
                 try {
-                    // إرسال البيانات إلى Google Form
-                    const googleFormUrl = 'https://docs.google.com/spreadsheets/d/1yZUZBGkHaxflDZmM7ifM7yPzBr76BagGK6sO9NdhBHI/edit?gid=0#gid=0';
+                    // رابط Google Apps Script (يجب استبداله برابط النشر الخاص بك)
+                    const scriptUrl = 'https://script.google.com/macros/s/AKfycbwz9B0Yy2Td2a6T7Y9gS9gS9gS9gS9gS9gS9gS9gS9gS9gS9gS9gS9gS9g/exec';
                     
-                    // إنشاء FormData للإرسال
-                    const form = new FormData();
-                    for (const key in formData) {
-                        form.append(key, formData[key]);
-                    }
+                    // جمع البيانات
+                    const formData = {
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        colors: selectedColors.map(c => c.name).join('، '),
+                        comments: comments,
+                        ageGroup: ageGroup
+                    };
                     
-                    // إرسال البيانات
-                    await fetch(googleFormUrl, {
+                    // إرسال البيانات إلى Google Apps Script
+                    const response = await fetch(scriptUrl, {
                         method: 'POST',
-                        body: form,
-                        mode: 'no-cors'
+                        body: JSON.stringify(formData),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
                     });
                     
-                    // إظهار رسالة التأكيد
-                    document.getElementById('loading').style.display = 'none';
-                    showConfirmation();
-                    resetForm();
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showConfirmation();
+                        resetForm();
+                    } else {
+                        alert('حدث خطأ أثناء حفظ البيانات: ' + result.message);
+                    }
                     
                 } catch (error) {
                     console.error('حدث خطأ أثناء الإرسال:', error);
+                    alert('حدث خطأ في الاتصال بالخادم: ' + error.message);
+                } finally {
                     document.getElementById('loading').style.display = 'none';
-                    alert('تم إرسال استطلاعك بنجاح! شكرًا لمشاركتك.');
-                    showConfirmation();
-                    resetForm();
                 }
             }
             
