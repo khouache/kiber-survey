@@ -1009,20 +1009,60 @@
                         }
                     });
                     
-                    const result = await response.json();
-                    
-                    if (result.success) {
+                    // التحقق من نجاح الإرسال (لا ننتظر JSON)
+                    if (response.ok) {
                         showConfirmation();
                         resetForm();
                     } else {
-                        alert('حدث خطأ أثناء حفظ البيانات: ' + result.message);
+                        // محاولة قراءة الرد كنص بدلاً من JSON
+                        const responseText = await response.text();
+                        console.error('رد الخادم:', responseText);
+                        throw new Error('فشل إرسال البيانات: ' + response.status);
                     }
                     
                 } catch (error) {
                     console.error('حدث خطأ أثناء الإرسال:', error);
-                    alert('حدث خطأ في الاتصال بالخادم: ' + error.message);
+                    
+                    // محاولة إرسال البيانات بطريقة بديلة
+                    try {
+                        await sendFallbackData({
+                            name: name,
+                            email: email,
+                            phone: phone,
+                            colors: selectedColors.map(c => c.name).join('، '),
+                            comments: comments,
+                            ageGroup: ageGroup
+                        });
+                        
+                        showConfirmation();
+                        resetForm();
+                    } catch (fallbackError) {
+                        console.error('فشل الإرسال البديل:', fallbackError);
+                        alert('حدث خطأ في الاتصال بالخادم: ' + error.message);
+                    }
                 } finally {
                     document.getElementById('loading').style.display = 'none';
+                }
+            }
+            
+            // طريقة بديلة للإرسال
+            async function sendFallbackData(data) {
+                // رابط بديل للإرسال (يمكنك استبداله برابطك)
+                const fallbackUrl = 'https://api.web3forms.com/submit';
+                
+                const response = await fetch(fallbackUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        access_key: 'YOUR_ACCESS_KEY', // استبدل بمفتاح الوصول الخاص بك
+                        ...data
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('فشل الإرسال البديل');
                 }
             }
             
