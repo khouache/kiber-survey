@@ -967,58 +967,50 @@
             }
             
             async function submitForm() {
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    const comments = document.getElementById('comments').value;
-    const ageGroup = document.getElementById('age-group').value;
+  // ... الكود السابق لجمع البيانات ...
+  
+  // إظهار مؤشر التحميل
+  document.getElementById('loading').style.display = 'flex';
+
+  try {
+    // رابط Google Apps Script الخاص بك
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbz5Xw_8skaNzV380uQSHslipOjt5b49WurmKNk5aCyP3A110beju9h_WlGWmlt9tWY3/exec';
+
+    // جمع البيانات بشكل صحيح
+    const formData = {
+      name: name,
+      email: email,
+      phone: phone || "غير مدخل", // القيمة الافتراضية
+      colors: selectedColors.map(c => c.name), // أسماء الألوان فقط
+      ageGroup: ageGroup || "غير محدد",
+      comments: comments || "لا يوجد"
+    };
+
+    // إرسال البيانات مع التحقق من الأخطاء
+    const response = await fetch(scriptUrl, {
+      method: 'POST',
+      body: JSON.stringify(formData),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // التحقق من الاستجابة
+    const result = await response.json();
     
-    if (!name || !email) {
-        alert('الرجاء إدخال الاسم والبريد الإلكتروني');
-        return;
+    if (result.status === "success") {
+      showConfirmation();
+      resetForm();
+    } else {
+      throw new Error(result.message || "فشل إرسال البيانات");
     }
     
-    if (selectedColors.length === 0) {
-        alert('الرجاء اختيار لون واحد على الأقل');
-        return;
-    }
-    
-    // إظهار مؤشر التحميل
-    document.getElementById('loading').style.display = 'flex';
-    
-    try {
-        // رابط Google Apps Script المعدل
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycby9qPGzxJzjDT9sH723lJNEwauqNXW5KnZ_Q3cZSc6RF791RZWAGbd6kJ2CcxtAbXCSVQ/exec';
-        
-        // جمع البيانات في FormData
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('email', email);
-        formData.append('phone', phone || '');
-        formData.append('colors', selectedColors.map(c => c.name).join('، '));
-        formData.append('comments', comments || '');
-        formData.append('ageGroup', ageGroup || '');
-        
-        // إرسال البيانات إلى Google Apps Script
-        const response = await fetch(scriptUrl, {
-            method: 'POST',
-            body: formData
-        });
-        
-        // التحقق من نجاح الإرسال
-        if (response.ok) {
-            showConfirmation();
-            resetForm();
-        } else {
-            throw new Error('فشل إرسال البيانات: ' + response.status);
-        }
-        
-    } catch (error) {
-        console.error('حدث خطأ أثناء الإرسال:', error);
-        alert('حدث خطأ في الاتصال بالخادم: ' + error.message);
-    } finally {
-        document.getElementById('loading').style.display = 'none';
-    }
+  } catch (error) {
+    console.error('حدث خطأ أثناء الإرسال:', error);
+    alert(`حدث خطأ: ${error.message}`);
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+  }
 }
             
             function showConfirmation() {
